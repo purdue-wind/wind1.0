@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <cmath>
 #include "instrument.h"
 #include "analoginstrument.h"
 
@@ -29,9 +30,11 @@ AnalogInstrument::~AnalogInstrument()
 
 void AnalogInstrument::setPort(int port)
 {
+#ifdef NOBONE
     // Do not switch an open port
     if (this->streamHandle)
         return;
+#endif
 
     this->port = port;
     sprintf(this->portDevice, "%s%d", ANALOG_DEVICE_PATH, port+1);
@@ -44,18 +47,27 @@ int AnalogInstrument::getPort(void)
 
 void AnalogInstrument::open(void)
 {
+#ifdef NOBONE
     this->streamHandle = fopen(this->portDevice, "rd");
+#endif
 }
 
 void AnalogInstrument::close(void)
 {
+#ifdef NOBONE
     fclose(this->streamHandle);
+#endif
     this->streamHandle = NULL;
 }
 
 void AnalogInstrument::update(void)
 {
     int bytesRead;
+
+#ifdef NOBONE
+    this->updateSimulated();
+    return;
+#endif
 
     if (!this->streamHandle)
         return;
@@ -80,3 +92,7 @@ double AnalogInstrument::voltsFromTxt(char *txt)
     return ((double)atoi(txt) / (double)MAX_DEV) * MAX_VOLTS;
 }
 
+void AnalogInstrument::updateSimulated()
+{
+    this->voltage = .1 * this->port;
+}

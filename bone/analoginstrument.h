@@ -36,6 +36,8 @@ protected:
 
 private:
     char portDevice[INST_BUF_MAX];
+
+    void updateSimulated(void);
 };
 #endif
 
