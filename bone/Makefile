@@ -19,7 +19,7 @@ endif
 
 all: wind clean
 
-wind: wind.o analoginstrument.o windoutput.o
+wind: wind.o analoginstrument.o windoutput.o windoutput-http.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 	mkdir -p output
         			
@@ -30,6 +30,9 @@ analoginstrument.o: analoginstrument.cpp analoginstrument.h instrument.h
 	$(CC) -c $(CFLAGS) $<
 
 windoutput.o: windoutput.cpp windoutput.h
+	$(CC) -c $(CFLAGS) $<
+
+windoutput-http.o: windoutput-http.cpp windoutput-http.h windoutput.h
 	$(CC) -c $(CFLAGS) $<
 
 clean:

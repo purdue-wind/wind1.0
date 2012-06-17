@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include "analoginstrument.h"
 #include "windoutput.h"
+#include "windoutput-http.h"
 
 #define BUFSIZE 512
 #define NUM_TEST_INST 7
@@ -54,13 +55,14 @@ void closeInstruments(AnalogInstrument *instList[], int count)
         instList[i]->open();
 }
 
-// Todo: Place most of this into the "send" method of the windmill's
+// Todo: Place most of this into a method of the windmill's
 // output interface. For now, main() is being used to test the
 // AnalogInstrument class.
 
 int main (void)
 {
     WindOutput *output;
+    WindOutputHTTP *outHttp;
     timeval curTime;
     timeval updateTime;
     char txt[BUFSIZE];
@@ -70,8 +72,11 @@ int main (void)
 
     gettimeofday(&updateTime, NULL);
 
-    // Initialize output
-    output = new WindOutput();
+    // Initialize output - use command line parameter to determine
+    // if we want file or web based output
+    outHttp = new WindOutputHTTP();
+
+    output = (WindOutput*)outHttp;
     output->initialize();
 
     for (i = 0; i < NUM_TEST_INST; i++)
@@ -139,6 +144,6 @@ void serializeOutputLine(char output[],
     }
     strcat(output, "\n");
 
-    *bytesOut = strlen(output) + 1;
+    *bytesOut = strlen(output);
 }
 
