@@ -12,7 +12,7 @@
 #define WINDOUTPUT_DEFAULT_MAX      102400
 //#define WINDOUTPUT_DEFAULT_FILE     "output/windout%d.txt"
 
-#define WINDOUTPUT_DEFAULT_URL  "http://192.168.1.8:8080/bone/index.php"
+#define WINDOUTPUT_DEFAULT_URL  "http://sslab00.cs.purdue.edu:8081/test2.php"
 
 WindOutputHTTP::WindOutputHTTP()
 {
