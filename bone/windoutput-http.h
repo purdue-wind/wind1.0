@@ -17,7 +17,7 @@
 class WindOutputHTTP : public WindOutput
 {
 public:
-    WindOutputHTTP();
+    WindOutputHTTP(size_t bufferSize, size_t maxBytes);
     virtual ~WindOutputHTTP(void);
 
     virtual void initialize(void);

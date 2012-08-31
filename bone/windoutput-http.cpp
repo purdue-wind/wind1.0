@@ -14,12 +14,9 @@
 
 #define WINDOUTPUT_DEFAULT_URL  "http://192.168.1.8:8080/bone/index.php"
 
-WindOutputHTTP::WindOutputHTTP()
+WindOutputHTTP::WindOutputHTTP(size_t bufferSize, size_t maxBytes)
+    : WindOutput::WindOutput(bufferSize, maxBytes)
 {
-    this->updates = 0;
-    this->bytesOut = 0;
-    this->bufSize = 0;
-    this->outBuffer = (char*)malloc(WINDOUTPUT_DEFAULT_BUFSIZE);
     this->curl = NULL;
     strcpy(this->url, WINDOUTPUT_DEFAULT_URL);
 }
@@ -52,14 +49,6 @@ void WindOutputHTTP::update(const char *data, size_t bytes)
     this->bufSize += bytes;
     this->bytesOut += bytes;
 }
-
-/*
-void WindOutput::getStatus(unsigned int *updates, size_t *bytesOut)
-{
-    *updates = this->updates;
-    *bytesOut = this->bytesOut;
-}
-*/
 
 void WindOutputHTTP::flushBuffer(void)
 {

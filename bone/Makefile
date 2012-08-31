@@ -4,16 +4,16 @@
 
 CC	= g++
 LDFLAGS = -lcurl
-CFLAGS  =
+CFLAGS  = 
 
 # Check if we are building on a beaglebone or other architecture
 # by testing whether or not the beaglebone's analog ports are present.
 
 ifeq ($(FORCEBEAGLEBONE),)
     ifeq ($(wildcard /sys/devices/platform/tsc/ain0),)
-        CFLAGS = -D NOBONE
+        CFLAGS = -pthread -std=c++0x -D NOBONE
     else
-        CFLAGS =
+        CFLAGS = -pthread -std=c++0x
     endif
 endif
 
