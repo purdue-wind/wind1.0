@@ -11,7 +11,7 @@ CFLAGS  =
 
 ifeq ($(FORCEBEAGLEBONE),)
     ifeq ($(wildcard /sys/devices/platform/tsc/ain0),)
-        CFLAGS = -pthread -std=c++0x -D NOBONE
+        CFLAGS = -pthread -std=c++0x -D NOBONE -D DEBUG
     else
         CFLAGS = -pthread -std=c++0x
     endif
@@ -19,7 +19,7 @@ endif
 
 all: wind clean
 
-wind: wind.o analoginstrument.o windoutput.o windoutput-http.o
+wind: wind.o logger.o analoginstrument.o windoutput.o windoutput-http.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 	mkdir -p output
         			
@@ -34,6 +34,9 @@ windoutput.o: windoutput.cpp windoutput.h
 
 windoutput-http.o: windoutput-http.cpp windoutput-http.h windoutput.h
 	$(CC) -c $(CFLAGS) $<
+
+logger.o: logger.cpp logger.h
+	$(CC) -c $(CGFLAGS) $<
 
 clean:
 	rm *.o

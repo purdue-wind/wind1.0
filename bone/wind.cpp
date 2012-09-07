@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/time.h>
+#include "logger.h"
 #include "analoginstrument.h"
 #include "windoutput.h"
 #include "windoutput-http.h"

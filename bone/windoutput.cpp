@@ -100,11 +100,9 @@ void WindOutput::getStatus(unsigned int *updates, size_t *bytesOut)
 // Copy the staging buffer into the output buffer (thread safe).
 void WindOutput::copyDoubleBuffer(void)
 {
-    this->lockBuffer();
     memcpy(this->outBuffer, this->stagingBuffer, this->bufSize);
     this->outBufSize = this->bufSize;
     this->bufSize = 0;
-    this->unlockBuffer();
 }
 
 void WindOutput::flushBuffer(void)
@@ -115,9 +113,11 @@ void WindOutput::flushBuffer(void)
     this->copyDoubleBuffer();
  
     // Default flush to file
+    this->lockBuffer();
     bytesWritten = fwrite(this->outBuffer, 1, this->outBufSize, this->outFile);
     this->outBufSize = 0;
     this->updates++;
+    this->unlockBuffer();
 }
 
 void WindOutput::openNextFile(void)
