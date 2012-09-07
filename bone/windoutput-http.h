@@ -17,11 +17,11 @@
 class WindOutputHTTP : public WindOutput
 {
 public:
-    WindOutputHTTP();
+    WindOutputHTTP(size_t bufferSize, size_t maxBytes);
     virtual ~WindOutputHTTP(void);
 
     virtual void initialize(void);
-    virtual void update(const char *data, size_t bytes);
+    //virtual void update(const char *data, size_t bytes);
     //virtual void getStatus(unsigned int *updates, size_t *bytesOut);
     void setURL (const char *url);
 

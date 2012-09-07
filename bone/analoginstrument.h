@@ -1,7 +1,7 @@
-// analoginstrument.h
+// analoginstrument.cpp
 // 
-// Superclass for generic analog instruments. It from a single Beaglebone analog port.
-// The basic analog instrument class reads voltage.
+// Superclass for generic analog instruments. It reads a single Beaglebone 
+// analog port. The basic analog instrument class reads voltage.
 
 #ifndef _ANALOGINSTRUMENT
 #define _ANALOGINSTRUMENT

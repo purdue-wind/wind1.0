@@ -1,7 +1,7 @@
 // wind.cpp
 //
-// Main class for the wind project, currenly contains code to hook into the instrument classes to produce
-// diagnostic output to display on the web.
+// Main class for the wind project, currenly contains code to hook into the
+// instrument classes to produce diagnostic output to display on the web.
 
 #include <iostream>
 #include <stdio.h>
@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/time.h>
+#include "logger.h"
 #include "analoginstrument.h"
 #include "windoutput.h"
 #include "windoutput-http.h"
@@ -62,7 +63,7 @@ void closeInstruments(AnalogInstrument *instList[], int count)
 int main (void)
 {
     WindOutput *output;
-    WindOutputHTTP *outHttp;
+    WindOutput *outHttp; //HTTP *outHttp;
     timeval curTime;
     timeval updateTime;
     char txt[BUFSIZE];
@@ -74,7 +75,7 @@ int main (void)
 
     // Initialize output - use command line parameter to determine
     // if we want file or web based output
-    outHttp = new WindOutputHTTP();
+    outHttp = new WindOutput(102912, 102400); //new WindOutputHTTP(102912, 102400);
 
     output = (WindOutput*)outHttp;
     output->initialize();

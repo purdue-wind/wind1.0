@@ -14,12 +14,9 @@
 
 #define WINDOUTPUT_DEFAULT_URL  "http://sslab00.cs.purdue.edu:8081/test2.php"
 
-WindOutputHTTP::WindOutputHTTP()
+WindOutputHTTP::WindOutputHTTP(size_t bufferSize, size_t maxBytes)
+    : WindOutput::WindOutput(bufferSize, maxBytes)
 {
-    this->updates = 0;
-    this->bytesOut = 0;
-    this->bufSize = 0;
-    this->outBuffer = (char*)malloc(WINDOUTPUT_DEFAULT_BUFSIZE);
     this->curl = NULL;
     strcpy(this->url, WINDOUTPUT_DEFAULT_URL);
 }
@@ -35,7 +32,7 @@ void WindOutputHTTP::initialize()
     curl_global_init(CURL_GLOBAL_ALL);
     this->curl = curl_easy_init();
 }
-
+/*
 void WindOutputHTTP::update(const char *data, size_t bytes)
 {
     //printf("test %s %d", data, this->bufSize);
@@ -52,21 +49,15 @@ void WindOutputHTTP::update(const char *data, size_t bytes)
     this->bufSize += bytes;
     this->bytesOut += bytes;
 }
-
-/*
-void WindOutput::getStatus(unsigned int *updates, size_t *bytesOut)
-{
-    *updates = this->updates;
-    *bytesOut = this->bytesOut;
-}
 */
-
 void WindOutputHTTP::flushBuffer(void)
 {
     struct curl_httppost *formpost = NULL;
     struct curl_httppost *postend = NULL;
     CURLcode res;
     char updateNoStr[256];
+
+    this->copyDoubleBuffer();
 
     sprintf(updateNoStr, "%d", this->updates);
 
@@ -83,7 +74,7 @@ void WindOutputHTTP::flushBuffer(void)
     curl_formadd(&formpost, &postend, 
                  CURLFORM_COPYNAME, "output",
                  CURLFORM_COPYCONTENTS, this->outBuffer,
-                 CURLFORM_CONTENTSLENGTH, this->bufSize,
+                 CURLFORM_CONTENTSLENGTH, this->outBufSize,
                  CURLFORM_END);
 
     curl_easy_setopt(this->curl, CURLOPT_URL, this->url);
@@ -95,7 +86,7 @@ void WindOutputHTTP::flushBuffer(void)
     // Clean up
     curl_formfree(formpost);
 
-    this->bufSize = 0;
+    this->outBufSize = 0;
     this->updates++;
 }
 
