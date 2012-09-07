@@ -23,13 +23,17 @@ public:
     // Thread sync
     void lock(void);
     void unlock(void);
+    void lockBuffer(void);
+    void unlockBuffer(void);
     void notifyBufferFull(void);
 
 protected:
     unsigned int updates;
     size_t bytesOut;
     char *outBuffer;
+    char *stagingBuffer;
     size_t bufSize;
+    size_t outBufSize;
     size_t maxBytes;
     pthread_t thread;
     pthread_mutex_t bufMutex;
@@ -38,7 +42,9 @@ protected:
     bool threadDone;
 
     void initThreading(void);
+    void tearDownThreading(void);
     virtual void flushBuffer(void);
+    void copyDoubleBuffer(void);
     static void *threadEntry(void *param);
 
 private:

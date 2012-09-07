@@ -1,7 +1,7 @@
 // wind.cpp
 //
-// Main class for the wind project, currenly contains code to hook into the instrument classes to produce
-// diagnostic output to display on the web.
+// Main class for the wind project, currenly contains code to hook into the
+// instrument classes to produce diagnostic output to display on the web.
 
 #include <iostream>
 #include <stdio.h>

@@ -16,15 +16,21 @@ WindOutput::WindOutput(size_t bufferSize, size_t maxBytes)
     this->updates = 0;
     this->bytesOut = 0;
     this->bufSize = 0;
+    this->outBufSize = 0;
     this->maxBytes = maxBytes;
+    this->stagingBuffer = (char*)malloc(bufferSize);
     this->outBuffer = (char*)malloc(bufferSize);
     this->outFile = NULL;
 }
 
 WindOutput::~WindOutput()
 {
+    this->tearDownThreading();
+
     if (this->outFile)
         fclose(this->outFile);
+
+    free(this->stagingBuffer);
     free(this->outBuffer);
 }
 
@@ -51,6 +57,15 @@ void WindOutput::initThreading()
     }
 }
 
+void WindOutput::tearDownThreading()
+{
+     // Clean up threading
+    pthread_mutex_lock(&this->bufMutex);
+    pthread_mutex_lock(&this->waitMutex);
+    pthread_mutex_destroy(&this->bufMutex);
+    pthread_mutex_destroy(&this->waitMutex);      
+}
+
 void WindOutput::initialize()
 {
     this->openNextFile();  // Open file
@@ -59,8 +74,6 @@ void WindOutput::initialize()
 
 void WindOutput::update(const char *data, size_t bytes)
 {
-    this->lock(); // Make threadsafe
-
     // Flush if the buffer max will be exceeded by the next update
     if (bytes + this->bufSize > this->maxBytes)
     {
@@ -68,12 +81,14 @@ void WindOutput::update(const char *data, size_t bytes)
         this->openNextFile();
     }
 
+    this->lockBuffer(); // Make threadsafe
+
     // Copy in new data
-    memcpy(this->outBuffer + this->bufSize, data, bytes);
+    memcpy(this->stagingBuffer + this->bufSize, data, bytes);
     this->bufSize += bytes;
     this->bytesOut += bytes;
 
-    this->unlock();
+    this->unlockBuffer();
 }
 
 void WindOutput::getStatus(unsigned int *updates, size_t *bytesOut)
@@ -82,13 +97,26 @@ void WindOutput::getStatus(unsigned int *updates, size_t *bytesOut)
     *bytesOut = this->bytesOut;
 }
 
+// Copy the staging buffer into the output buffer (thread safe).
+void WindOutput::copyDoubleBuffer(void)
+{
+    this->lockBuffer();
+    memcpy(this->outBuffer, this->stagingBuffer, this->bufSize);
+    this->outBufSize = this->bufSize;
+    this->bufSize = 0;
+    this->unlockBuffer();
+}
+
 void WindOutput::flushBuffer(void)
 {
     size_t bytesWritten;
-
+  
+    // Flush the staging buffer to the out buffer 
+    this->copyDoubleBuffer();
+ 
     // Default flush to file
-    bytesWritten = fwrite(this->outBuffer, 1, this->bufSize, this->outFile);
-    this->bufSize = 0;
+    bytesWritten = fwrite(this->outBuffer, 1, this->outBufSize, this->outFile);
+    this->outBufSize = 0;
     this->updates++;
 }
 
@@ -112,6 +140,18 @@ void WindOutput::lock()
 void WindOutput::unlock()
 {
     pthread_mutex_unlock(&this->bufMutex);
+}
+
+// Lock the mutex that causes output to wait if the
+// double buffer is busy.
+void WindOutput::lockBuffer()
+{
+    pthread_mutex_lock(&this->waitMutex);
+}
+
+void WindOutput::unlockBuffer()
+{
+    pthread_mutex_unlock(&this->waitMutex);
 }
 
 void WindOutput::notifyBufferFull()
