@@ -5,6 +5,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include "logger.h"
 #include "windoutput.h"
 
 #define WINDOUTPUT_DEFAULT_BUFSIZE  102912
@@ -75,6 +76,7 @@ void WindOutput::initialize()
 void WindOutput::update(const char *data, size_t bytes)
 {
     // Flush if the buffer max will be exceeded by the next update
+    //TRACE("bufSize: %d, max: %d", this->bufSize, this->maxBytes);
     if (bytes + this->bufSize > this->maxBytes)
     {
         this->notifyBufferFull();
@@ -165,7 +167,9 @@ void *WindOutput::threadEntry(void *param)
 
     me->lock();
     me->threadDone = false;
-    me->unlock();
+    me->unlock();    
+
+    TRACE("Output thread started.\n");
 
     while(1)
     {
@@ -173,7 +177,7 @@ void *WindOutput::threadEntry(void *param)
         me->lock();
         pthread_cond_wait(&me->flushCond, &me->bufMutex); // "Virtual" unlock
         //...but it exits the wait condition locked.
-
+        TRACE("Flushing data buffer.");
         me->flushBuffer(); // Perform a buffer flush
         me->unlock();
        

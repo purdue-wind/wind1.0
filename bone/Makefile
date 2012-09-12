@@ -11,7 +11,7 @@ CFLAGS  =
 
 ifeq ($(FORCEBEAGLEBONE),)
     ifeq ($(wildcard /sys/devices/platform/tsc/ain0),)
-        CFLAGS = -pthread -std=c++0x -D NOBONE -D DEBUG
+        CFLAGS = -g -pthread -std=c++0x -D NOBONE -D DEBUG
     else
         CFLAGS = -pthread -std=c++0x
     endif

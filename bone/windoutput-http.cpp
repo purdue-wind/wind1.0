@@ -12,7 +12,7 @@
 #define WINDOUTPUT_DEFAULT_MAX      102400
 //#define WINDOUTPUT_DEFAULT_FILE     "output/windout%d.txt"
 
-#define WINDOUTPUT_DEFAULT_URL  "http://sslab00.cs.purdue.edu:8081/test2.php"
+#define WINDOUTPUT_DEFAULT_URL  "http://wind.cs.purdue.edu/winddat/bbone_dat_gen.php"
 
 WindOutputHTTP::WindOutputHTTP(size_t bufferSize, size_t maxBytes)
     : WindOutput::WindOutput(bufferSize, maxBytes)
@@ -28,6 +28,8 @@ WindOutputHTTP::~WindOutputHTTP()
 
 void WindOutputHTTP::initialize()
 {
+    this->initThreading();
+
     // Init curl (easy mode for now)
     curl_global_init(CURL_GLOBAL_ALL);
     this->curl = curl_easy_init();

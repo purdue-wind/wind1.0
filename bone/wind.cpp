@@ -63,7 +63,7 @@ void closeInstruments(AnalogInstrument *instList[], int count)
 int main (void)
 {
     WindOutput *output;
-    WindOutput *outHttp; //HTTP *outHttp;
+    WindOutputHTTP *outHttp;
     timeval curTime;
     timeval updateTime;
     char txt[BUFSIZE];
@@ -75,7 +75,7 @@ int main (void)
 
     // Initialize output - use command line parameter to determine
     // if we want file or web based output
-    outHttp = new WindOutput(102912, 102400); //new WindOutputHTTP(102912, 102400);
+    outHttp = new WindOutputHTTP(102912, 102400);
 
     output = (WindOutput*)outHttp;
     output->initialize();
