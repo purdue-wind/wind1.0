@@ -11,6 +11,8 @@
 #define _TRACE
 #ifdef DEBUG
     #define TRACE(...) Logger::tracewrite(__FUNCTION__, __LINE__, __VA_ARGS__, NULL);
+#else
+    #define TRACE
 #endif
 #endif
 

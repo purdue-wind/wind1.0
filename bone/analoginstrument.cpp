@@ -12,7 +12,7 @@
 
 #define MAX_VOLTS 1.8
 #define MAX_DEV 4096
-#define ANALOG_DEVICE_PATH "/sys/devices/platform/tsc/ain"
+#define ANALOG_DEVICE_PATH "/sys/devices/platform/omap/tsc/ain"
 
 using namespace std;
 
@@ -47,7 +47,7 @@ int AnalogInstrument::getPort(void)
 
 void AnalogInstrument::open(void)
 {
-#ifdef NOBONE
+#ifndef NOBONE
     this->streamHandle = fopen(this->portDevice, "rd");
 #endif
 }

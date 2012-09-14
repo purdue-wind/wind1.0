@@ -3,17 +3,17 @@
 # Makes the beaglebone portion of the wind project.
 
 CC	= g++
-LDFLAGS = -lcurl
+LDFLAGS = -lcurl -pthread
 CFLAGS  = 
 
 # Check if we are building on a beaglebone or other architecture
 # by testing whether or not the beaglebone's analog ports are present.
 
 ifeq ($(FORCEBEAGLEBONE),)
-    ifeq ($(wildcard /sys/devices/platform/tsc/ain0),)
-        CFLAGS = -g -pthread -std=c++0x -D NOBONE -D DEBUG
+    ifeq ($(wildcard /sys/devices/platform/omap/tsc/ain1),)
+        CFLAGS = -g std=c++0x -D NOBONE -D DEBUG
     else
-        CFLAGS = -pthread -std=c++0x
+        CFLAGS = -std=c++0x -g
     endif
 endif
 

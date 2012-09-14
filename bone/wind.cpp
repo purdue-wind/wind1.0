@@ -81,7 +81,7 @@ int main (void)
     output->initialize();
 
     for (i = 0; i < NUM_TEST_INST; i++)
-        gTestInstruments[i] = new AnalogInstrument(i);
+        gTestInstruments[i] = new AnalogInstrument(i+1);
 
     openInstruments(gTestInstruments, NUM_TEST_INST);
 
