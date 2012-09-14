@@ -11,7 +11,7 @@ CFLAGS  =
 
 ifeq ($(FORCEBEAGLEBONE),)
     ifeq ($(wildcard /sys/devices/platform/omap/tsc/ain1),)
-        CFLAGS = -g std=c++0x -D NOBONE -D DEBUG
+        CFLAGS = -g -std=c++0x -D NOBONE -D DEBUG
     else
         CFLAGS = -std=c++0x -g
     endif
@@ -39,7 +39,7 @@ windoutput-http.o: windoutput-http.cpp windoutput-http.h windoutput.h
 	$(CC) -c $(CFLAGS) $<
 
 logger.o: logger.cpp logger.h
-	$(CC) -c $(CGFLAGS) $<
+	$(CC) -c $(CFLAGS) $<
 
 clean:
 	rm *.o
