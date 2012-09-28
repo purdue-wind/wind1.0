@@ -15,8 +15,8 @@ public:
     i2cInstrument();
     virtual ~i2cInstrument(void);
 
-    virtual void open(void);
-    virtual void close(void);
+    virtual void openInst(void);
+    virtual void closeInst(void);
     virtual void update(void);
     virtual void serializeOutput(char *buffer, size_t *bytes);
 

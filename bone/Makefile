@@ -17,6 +17,9 @@ ifeq ($(FORCEBEAGLEBONE),)
     endif
 endif
 
+test: i2cinstrument.o uart.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
 all: wind clean
 
 wind: wind.o logger.o analoginstrument.o i2cinstrument.o windoutput.o windoutput-http.o
@@ -41,6 +44,10 @@ windoutput-http.o: windoutput-http.cpp windoutput-http.h windoutput.h
 logger.o: logger.cpp logger.h
 	$(CC) -c $(CFLAGS) $<
 
+uart.o: uart.cpp
+	$(CC) -c $(CFLAGS) $<
+
 clean:
 	rm *.o
+
 
