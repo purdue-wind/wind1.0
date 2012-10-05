@@ -20,8 +20,13 @@ public:
     virtual void update(void);
     virtual void serializeOutput(char *buffer, size_t *bytes);
 
+    size_t readFD(void *ptr, size_t max);
+    int checkXBeeConnection(void);
+    int readXBeeAck(void);
+
 protected:
-    FILE *streamHandle; 
+    FILE *streamHandle;
+    int fileDesc;
 
 private:
 
